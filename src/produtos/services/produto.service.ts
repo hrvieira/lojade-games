@@ -2,12 +2,10 @@ import { CategoriasService } from './../../categorias/services/categorias.servic
 import { Produtos } from './../entities/produto.entity';
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, ILike, Repository } from 'typeorm';
-
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 
 @Injectable()
 export class ProdutosService {
-    [x: string]: any;
 
     constructor(
         @InjectRepository(Produtos)
@@ -22,6 +20,7 @@ export class ProdutosService {
             }
         });
     }
+    
     async findById(id: number): Promise<Produtos>{
         let produtos = await this.produtosRepository.findOne({
             where: {
@@ -35,6 +34,7 @@ export class ProdutosService {
 
         return produtos;
     }
+    
     async findByTitulo(titulo: string): Promise<Produtos[]>{
         return await this.produtosRepository.find({
             where: {
@@ -44,9 +44,9 @@ export class ProdutosService {
             }
         })
     }
+    
     async create(produtos: Produtos): Promise<Produtos>{
 
-        // Caso o tema tenha sido preenchido
         if (produtos.categorias){
 
             let categorias = await this.categoriasService.findById(produtos.categorias.id)
@@ -57,10 +57,7 @@ export class ProdutosService {
             return await this.produtosRepository.save(produtos);
         }
 
-        // Caso o tema não tenha sido preenchido
         return await this.produtosRepository.save(produtos);
-
-         // INSERT INTO tb_postagens (titulo, texto, data) VALUES (?, ?, server);
     }
 
     async update(produtos: Produtos): Promise<Produtos>{
@@ -82,6 +79,7 @@ export class ProdutosService {
      
         return await this.produtosRepository.save(produtos);
     }
+    
     async delete(id: number): Promise<DeleteResult>{
         let buscaProdutos = await this.findById(id)
 
